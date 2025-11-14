@@ -1,0 +1,43 @@
+
+> shopify_import@1.0.0 start
+> node server.js
+
+
+🚀 Server running on http://localhost:4000
+
+📍 Endpoints:
+   POST   /api/products/import     - Start bulk import
+   GET    /api/products            - Get products as JSON
+   GET    /api/products/status     - Check import status
+
+📦 Starting bulk import for: T-Shirts
+✓ Bulk operation started: gid://shopify/BulkOperation/6760142668078
+⏳ Polling for bulk operation completion...
+✓ Bulk operation completed
+📥 Downloading results from: https://storage.googleapis.com/shopify-tiers-assets-prod-us-east1/bulk-operation-outputs/jyyf44wtiqe2l2eae9qwck7woj2q-final?GoogleAccessId=assets-us-prod%40shopify-tiers.iam.gserviceaccount.com&Expires=1763035274&Signature=FE7a%2FcgCXspvImigw9LjXjCntlGRaGh1dJqEv5w39AlJC8OJEv8guxIkJwyGVW7qVNKt5nEdqh6jGW6A9H7jrU1wlJ04uom9ijT03ar8luzBULzndqbo3dIdYBR%2Bnni8hs91Hx1UqQfM6jOjHZrPTRWjv0k%2F%2BJwo%2FqKfCrm%2FaoaFsRtfMok7TlOnd4Z5oxRk26Vc6GCCt7%2FwcreA88%2Bq5wFp0v17LfiC3xaChPxPAEBoPSJ3PTWA%2Fm8X2q7jJY%2B7LHqfrFNZuA%2Fmh3Zrt9HNxTNIcM0KqICzGOi3iFUzdwKUfoA4diMPdJ%2BipNhiyb3nSkSZJUqYsqHHmucrfESwdw%3D%3D&response-content-disposition=attachment%3B+filename%3D%22bulk-6760142668078.jsonl%22%3B+filename%2A%3DUTF-8%27%27bulk-6760142668078.jsonl&response-content-type=application%2Fjsonl
+📦 Product: Stripes relaxed fit Polo Collar 100% Cotton T-Shirt(updated-2) (0 variants, 0 images)
+📦 Product: Black / S (0 variants, 0 images)
+📦 Product: Black / M (0 variants, 0 images)
+📦 Product: Black / L (0 variants, 0 images)
+📦 Product: Black / XL (0 variants, 0 images)
+📦 Product: Black / XXL (0 variants, 0 images)
+📦 Product: Brown / S (0 variants, 0 images)
+📦 Product: Brown / M (0 variants, 0 images)
+📦 Product: Brown / L (0 variants, 0 images)
+📦 Product: Brown / XL (0 variants, 0 images)
+📦 Product: Brown / XXL (0 variants, 0 images)
+📦 Product: Graphic Oversized 100% Cotton T-Shirt (0 variants, 0 images)
+📦 Product: Navy / XS (0 variants, 0 images)
+📦 Product: Navy / S (0 variants, 0 images)
+📦 Product: Navy / M (0 variants, 0 images)
+📦 Product: Navy / L (0 variants, 0 images)
+📦 Product: Navy / XL (0 variants, 0 images)
+📦 Product: Navy / XXL (0 variants, 0 images)
+📦 Product: Graphic Slim Fit 100% Cotton T-Shirt (UPDATED-1) (0 variants, 0 images)
+📦 Product: Green / S (0 variants, 0 images)
+📦 Product: Green / M (0 variants, 0 images)
+📦 Product: Green / L (0 variants, 0 images)
+📦 Product: Green / XL (0 variants, 0 images)
+📦 Product: Green / XXL (0 variants, 0 images)
+✓ Parsed 71 JSONL lines into 24 products
+✓ Loaded 24 products

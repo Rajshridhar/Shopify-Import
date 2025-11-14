@@ -1,0 +1,19 @@
+{
+  "name": "shopify_import",
+  "version": "1.0.0",
+  "description": "Shopify Product Importer - API Server",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bullmq": "^5.63.1",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0"
+  }
+}
