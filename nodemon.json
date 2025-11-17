@@ -1,0 +1,19 @@
+{
+  "watch": [
+    "server.js",
+    "shopifyService.js",
+    "worker.js",
+    "controllers/**/*.js",
+    "library/**/*.js",
+    "routes/**/*.js"
+  ],
+  "ext": "js,json",
+  "ignore": [
+    "node_modules/**",
+    "*.test.js"
+  ],
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "delay": 1000
+}

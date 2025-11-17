@@ -242,3 +242,39 @@ export async function downloadAndAssembleProducts(url) {
   console.log(`Parsed ${lineCount} lines -> ${result.length} products`);
   return result;
 }
+
+// State management for cached products
+let allProducts = [];
+let importPromise = null;
+
+/**
+ * Ensures products are fresh and cached
+ * @param {boolean} force - Force refresh even if products are cached
+ * @returns {Promise<Array>} Array of products
+ */
+export async function ensureProductsFresh(force = false) {
+  if (!force && allProducts.length > 0) return allProducts;
+  if (importPromise) {
+    // An import is already in progress; wait for it
+    return importPromise;
+  }
+  const productType = process.env.PRODUCT_TYPE || 'T-Shirts';
+  console.log(`Starting bulk import for: ${productType}`);
+  const query = buildBulkProductsQuery(productType);
+  importPromise = (async () => {
+    try {
+      const bulkOp = await startBulkOperation(query);
+      console.log(`Bulk operation started: ${bulkOp.id}`);
+      const completed = await pollBulkOperationUntilComplete();
+      if (!completed.url) throw new Error('No result URL from bulk operation');
+      const products = await downloadAndAssembleProducts(completed.url);
+      allProducts = products;
+      console.log(`Imported ${allProducts.length} products`);
+      return allProducts;
+    } finally {
+      importPromise = null;
+    }
+  })();
+  return importPromise;
+}
+
