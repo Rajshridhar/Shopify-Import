@@ -249,24 +249,28 @@ let importPromise = null;
 
 /**
  * Ensures products are fresh and cached
+ * @param {string} productType - Product type to fetch (e.g., 'T-Shirts')
  * @param {boolean} force - Force refresh even if products are cached
  * @returns {Promise<Array>} Array of products
  */
-export async function ensureProductsFresh(force = false) {
+export async function ensureProductsFresh(productType = 'T-Shirts', force = false) {
   if (!force && allProducts.length > 0) return allProducts;
   if (importPromise) {
     // An import is already in progress; wait for it
     return importPromise;
   }
-  const productType = process.env.PRODUCT_TYPE || 'T-Shirts';
+
   console.log(`Starting bulk import for: ${productType}`);
   const query = buildBulkProductsQuery(productType);
+
   importPromise = (async () => {
     try {
       const bulkOp = await startBulkOperation(query);
       console.log(`Bulk operation started: ${bulkOp.id}`);
+
       const completed = await pollBulkOperationUntilComplete();
       if (!completed.url) throw new Error('No result URL from bulk operation');
+
       const products = await downloadAndAssembleProducts(completed.url);
       allProducts = products;
       console.log(`Imported ${allProducts.length} products`);
@@ -275,6 +279,19 @@ export async function ensureProductsFresh(force = false) {
       importPromise = null;
     }
   })();
+
   return importPromise;
 }
 
+// // Auto-fetch and print products on module load
+// (async () => {
+//   try {
+//     console.log('\n🔄 Fetching products from Shopify...\n');
+//     const products = await ensureProductsFresh('T-Shirts');
+//     console.log('\n📦 Products JSON:\n');
+//     console.log(JSON.stringify(products, null, 2));
+//     console.log(`\n✅ Successfully fetched ${products.length} products\n`);
+//   } catch (error) {
+//     console.error('\n❌ Error fetching products:', error.message);
+//   }
+// })();

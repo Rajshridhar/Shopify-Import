@@ -3,7 +3,7 @@ import { bulkImportProducts } from './bulkImportProducts.js';
 import { getClientData } from '../../utils/internal-service/databaseOperation.js';
 import logger from '../../utils/logger/index.js';
 
-export async function importProducts(jobData = {}) {
+export async function importProducts(jobData = {}, clientMarketplaceConfig) {
 
     console.log("JOB DATA: ", jobData);
 
@@ -16,10 +16,10 @@ export async function importProducts(jobData = {}) {
 
     try {
         if (channel == 'SHOPIFY') {
-            bulkImportProducts(jobData);
-            return { message: `Import started for channel: ${channel}` };
+            bulkImportProducts(jobData, clientMarketplaceConfig);
         } else {
             logger.log('error', `IMPORT PRODUCTS - Unsupported channel: ${channel}`);
+           return { message: `Import Declined for channel: ${channel}` };
         }
     } catch (err) {
         console.log('ERROR: ', err);
