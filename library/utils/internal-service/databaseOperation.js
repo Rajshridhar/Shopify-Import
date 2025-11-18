@@ -2,11 +2,14 @@ import logger from '../logger/index.js';
 import catalogusAPI from './catalogusAPI.js';
 import { encrypt, decrypt } from '../encryption.js';
 
-export const getClient = async (clientId) => {
+
+
+//IMPORT - function for getting client data
+export const getClientData = async (clientId) => {
     try {
-        const client = await catalogusAPI.get(`/v1/client/${clientId}`);
-        if (client.status === 200) {
-            return client.data;
+        const clientData = await catalogusAPI.get(`/v1/client/${clientId}`);
+        if (clientData.status === 200) {
+            return clientData.data;
         } else {
             return { error: `Failed to get client for clientId: ${clientId}` };
         }
@@ -15,21 +18,25 @@ export const getClient = async (clientId) => {
         throw error;
     }
 };
+// const clientData = await getClientData('SNI0');
+// console.log("CLIENT DATA: ", clientData);
 
-export const getAttribute = async (clientId) => {
+//IMPORT - function for getting job details
+export const getJobDetails = async (jobId) => {
     try {
-        const attribute = await catalogusAPI.get(`/v1/attribute?clientId=${clientId}`);
-        if (attribute.status === 200) {
-            return attribute.data;
+        const jobDetails = await catalogusAPI.get(`/job/${jobId}`);
+        if (jobDetails.status === 200) {
+            return jobDetails.data;
         } else {
-            return { error: `Failed to get attribute for clientId: ${clientId}` };
+            throw new Error(`Failed to get job details for jobId: ${jobId}`);
         }
     } catch (error) {
-        console.error('Error in getAttribute', error);
+        console.error('Error in getJobDetails', error);
         throw error;
     }
 };
 
+// IMPORT - function for fetching and decrypting client marketplace config
 export const fetchAndDecryptClientMarketplaceConfig = async (clientId) => {
     try {
         if (!clientId) {
@@ -60,34 +67,7 @@ export const fetchAndDecryptClientMarketplaceConfig = async (clientId) => {
     }
 };
 
-export const getJobDetails = async (jobId) => {
-    try {
-        const jobDetails = await catalogusAPI.get(`/job/${jobId}`);
-        if (jobDetails.status === 200) {
-            return jobDetails.data;
-        } else {
-            throw new Error(`Failed to get job details for jobId: ${jobId}`);
-        }
-    } catch (error) {
-        console.error('Error in getJobDetails', error);
-        throw error;
-    }
-};
-
-export const getProduct = async (filters) => {
-    try {
-        const products = await catalogusAPI.get(`/v1/product`, { params: filters });
-        if (products.status === 200) {
-            return products.data;
-        } else {
-            throw new Error(`Failed to get products filters: ${filters}`);
-        }
-    } catch (error) {
-        console.error('Error in getProducts', error);
-        throw error;
-    }
-};
-
+// IMPORT - function for updating job details
 export const updateJob = async (jobId, data) => {
     try {
         if (!jobId || !data) {
@@ -105,6 +85,8 @@ export const updateJob = async (jobId, data) => {
     }
 };
 
+
+// IMPORT - function for encrypting and storing seller tokens
 /**
  * Store seller tokens and information
  * @param {Object} tokenData - Token and seller information
@@ -151,6 +133,36 @@ export async function encryptAndStoreSellerTokens(clientId, tokenData) {
     }
 }
 
+export const getAttribute = async (clientId) => {
+    try {
+        const attribute = await catalogusAPI.get(`/v1/attribute?clientId=${clientId}`);
+        if (attribute.status === 200) {
+            return attribute.data;
+        } else {
+            return { error: `Failed to get attribute for clientId: ${clientId}` };
+        }
+    } catch (error) {
+        console.error('Error in getAttribute', error);
+        throw error;
+    }
+};
+
+
+
+export const getProduct = async (filters) => {
+    try {
+        const products = await catalogusAPI.get(`/v1/product`, { params: filters });
+        if (products.status === 200) {
+            return products.data;
+        } else {
+            throw new Error(`Failed to get products filters: ${filters}`);
+        }
+    } catch (error) {
+        console.error('Error in getProducts', error);
+        throw error;
+    }
+};
+
 export const bulkUpdateVariants = async (variantsUpdateData) => {
     try {
         if (!variantsUpdateData || Object.keys(variantsUpdateData).length === 0) {
@@ -171,3 +183,4 @@ export const bulkUpdateVariants = async (variantsUpdateData) => {
         throw error;
     }
 };
+

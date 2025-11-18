@@ -5,7 +5,7 @@
 
 import 'dotenv/config';
 import express from 'express';
-import { ensureProductsFresh } from './shopifyService.js';
+import { ensureProductsFresh } from './library/utils/shopify-helper/get-products-data.js';
 
 const app = express();
 app.use(express.json());
@@ -14,7 +14,7 @@ app.use(express.json());
 app.get('/api/products', async (req, res) => {
   try {
     const force = req.query.refresh === 'true';
-    const products = await ensureProductsFresh(force);
+    const products = await ensureProductsFresh(force); // this function i have to call in bulkImportProducts.js before mapping the attributes 
     res.json({ success: true, count: products.length, products });
   } catch (err) {
     console.error('Error serving /api/products:', err.message);

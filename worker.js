@@ -1,16 +1,12 @@
 import { Worker } from 'bullmq';
 import logger from './library/utils/logger/index.js';
 import { getUniqueQueueName } from './library/utils/general.js';
-import {
-    fetchAndDecryptClientMarketplaceConfig,
-    getJobDetails,
-    updateJob,
-} from './library/utils/internal-service/databaseOperations.js';
 import 'dotenv/config';
 import { setContext } from './library/utils/context.js';
 import { sendNotification } from './library/utils/internal-service/index.js';
 import { sendEmail } from './library/collection/notification/email.js';
-import { createOrUpdateListing } from './library/utils/shopify-helper/shopify.js';
+import { fetchAndDecryptClientMarketplaceConfig, getJobDetails, updateJob } from './library/utils/internal-service/databaseOperation.js';
+import { importProducts } from './library/collection/job/importProducts.js';
 
 const REDIS_CONFIG = {
     HOST: 'redis-12388.c305.ap-south-1-1.ec2.cloud.redislabs.com',
@@ -18,7 +14,7 @@ const REDIS_CONFIG = {
     PASSWORD: 'DFAmQox36zyHmNbhVgzDLvHEQ1v9MVh4',
 };
 
-const queueName = getUniqueQueueName('shopify-api'); // The worker will connect specifcally to SP API jobs queue
+const queueName = getUniqueQueueName('shopify-api-import'); // The worker will connect specifcally to SP API jobs queue
 
 logger.log('info', `######## SHOPIFY API WORKER CONNECTED TO QUEUE NAME: ${queueName}`);
 
@@ -69,8 +65,8 @@ async function processJob(jobId) {
             if (type) {
                 let response = {};
                 switch (type) {
-                    case 'SYNCHRONIZATION_CREATE_LISTING':
-                        response = await createOrUpdateListing(jobData, clientMarketplaceConfig);
+                    case 'IMPORT':
+                        response = await importProducts(jobData, clientMarketplaceConfig);
                         break;
                     default:
                         throw new Error(`Handler not found for job type: ${type}!`);
@@ -104,7 +100,7 @@ async function processJob(jobId) {
         await sendNotification({
             client_id: clientId,
             users: [userEmail],
-            module: 'SYNCHRONIZATION',
+            module: 'IMPORT',
             message: errMsg,
             jobResponse: {
                 remarks: { error: errMsg },
@@ -118,7 +114,7 @@ async function processJob(jobId) {
         });
         await sendEmail({
             to: userEmail,
-            subject: `SP API Worker Failed | ${jobId} | FAILED`,
+            subject: `Shopify API Worker Failed | ${jobId} | FAILED`,
             text: `
                 Status : Failed
                 Job details: ${JSON.stringify(errMsg)}
@@ -177,7 +173,7 @@ const redis = worker['connection'];
 redis.on('connect', () => logger.log('info', '🔌 Redis (worker) client connected.'));
 redis.on('ready', () => logger.log('info', '📡 Redis (worker) client ready.'));
 redis.on('end', () => logger.log('warn', '🔌 Redis (worker) connection closed.'));
-redis.on('error', (err) => logger.log('info', '[SP-API] 🚨 Redis (worker) error:', err));
+redis.on('error', (err) => logger.log('info', '[SHOPIFY-API-IMPORT] 🚨 Redis (worker) error:', err));
 redis.on('reconnecting', () => logger.log('info', '♻️ Redis (worker) reconnecting...'));
 
 // The job can be run via CLI using command: node worker.js --run-job jobId
